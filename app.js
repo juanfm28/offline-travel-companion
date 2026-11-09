@@ -6,11 +6,14 @@
   const base = new URL('./', location.href);
   let state = { documents: [], itinerary: null };
   let busy = false, registration, renderedHash, frameToken, replacingId, pdfObjectUrl;
-  let applyUpdate = false, routeGeneration = 0;
+  let applyUpdate = false, routeGeneration = 0, noticeTimer;
   function announce(message, kind = 'info') {
-    $('message').textContent = message;
+    clearTimeout(noticeTimer);
+    $('message-text').textContent = message;
     $('message').dataset.kind = kind;
     $('message').hidden = false;
+    if (kind === 'error') setExpanded(false);
+    else noticeTimer = setTimeout(() => { $('message').hidden = true; }, 6000);
   }
   function errorText(error) {
     if (error?.name === 'QuotaExceededError') return 'Device storage is full. Previous files were kept. Free some space and try again; keep your originals in Files.';
@@ -38,15 +41,26 @@
   function standalone() {
     return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   }
+  function setExpanded(expanded) {
+    document.body.classList.toggle('expanded', expanded);
+    $('exit-expanded').hidden = !expanded;
+    $('expand-itinerary').setAttribute('aria-pressed', String(expanded));
+  }
+  function syncReadingLayout() {
+    const reading = !!state.itinerary && !$('panel-itinerary').hidden;
+    document.body.classList.toggle('has-files', !!state.itinerary || !!state.documents.length);
+    document.body.classList.toggle('reading', reading);
+    $('expand-itinerary').hidden = !reading;
+    if (!reading) setExpanded(false);
+  }
   function renderItinerary() {
     const record = state.itinerary;
+    syncReadingLayout();
     $('itinerary-empty').hidden = !!record;
-    $('itinerary-toolbar').hidden = !record;
     $('itinerary-status').textContent = record ? `${record.name} · ${C.formatBytes(record.size)} · saved ${displayTime(record.savedAt)}` : 'No saved itinerary found. Import from your independent device backup.';
     if (!record) {
       $('itinerary-view').replaceChildren(); renderedHash = undefined; return;
     }
-    $('itinerary-label').textContent = record.name;
     if ($('panel-itinerary').hidden || renderedHash === record.sha256) return;
     const expectedHash = record.sha256;
     record.blob.text().then(html => {
@@ -98,7 +112,7 @@
       actions.append(replace, remove); row.append(main, actions); nodes.push(row);
     }
     $('document-list').replaceChildren(...nodes);
-    const folders = new Set(['Entry and travel documents', 'Transportation', 'Accommodation', 'Activities', ...state.documents.map(doc => doc.folder).filter(Boolean)]);
+    const folders = new Set(state.documents.map(doc => doc.folder).filter(Boolean));
     $('folder-options').replaceChildren(...[...folders].sort().map(folder => {
       const option = document.createElement('option'); option.value = folder; return option;
     }));
@@ -140,7 +154,7 @@
       if (a.hash === '#' + (tab === 'pdf' ? 'documents' : tab)) a.setAttribute('aria-current', 'page');
       else a.removeAttribute('aria-current');
     });
-    if (tab !== 'itinerary') { document.body.classList.remove('expanded'); $('expand-itinerary').textContent = 'Expand view'; }
+    syncReadingLayout();
     releasePdf();
     if (tab === 'itinerary') renderItinerary();
     if (tab === 'status') await refreshStatus();
@@ -313,12 +327,15 @@
     button.addEventListener('click', () => { if (!busy) $(button.dataset.choose).click(); });
   });
   $('folder-import-label').hidden = !('webkitdirectory' in $('folder-input'));
+  $('folder-name').value = '';
   $('document-search').addEventListener('input', renderDocuments);
   $('close-pdf').addEventListener('click', () => { location.hash = 'documents'; });
   $('expand-itinerary').addEventListener('click', () => {
-    const expanded = document.body.classList.toggle('expanded');
-    $('expand-itinerary').textContent = expanded ? 'Show navigation' : 'Expand view';
+    setExpanded(true);
   });
+  $('exit-expanded').addEventListener('click', () => setExpanded(false));
+  $('dismiss-message').addEventListener('click', () => { clearTimeout(noticeTimer); $('message').hidden = true; });
+  addEventListener('keydown', event => { if (event.key === 'Escape') setExpanded(false); });
   $('request-persistence').addEventListener('click', () => work(() => requestPersistence(true)));
   $('verify-files').addEventListener('click', () => work(verifyFiles));
   $('check-update').addEventListener('click', () => work(async () => {

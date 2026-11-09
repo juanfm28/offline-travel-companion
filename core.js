@@ -1,7 +1,7 @@
 /* Shared, dependency-free helpers. No file contents are sent over the network. */
 (function (root) {
   'use strict';
-  const VERSION = '1.0.2';
+  const VERSION = '1.0.3';
   const CACHE_PREFIX = 'travel-companion-shell-';
   const SHELL_FILES = [
     './', './index.html', './styles.css', './core.js', './storage.js', './app.js',

@@ -30,8 +30,12 @@
     <a href="#itinerary" aria-current="page">Itinerary</a>
     <a href="#documents">Documents <span id="document-count" class="count">0</span></a>
     <a href="#status">Offline status</a>
+    <button id="expand-itinerary" type="button" class="quiet expand-view" aria-label="Expand itinerary" aria-pressed="false" hidden><span aria-hidden="true">⤢</span><span class="expand-label">Expand view</span></button>
   </nav>
-  <div id="message" class="message" role="status" aria-live="polite" hidden></div>
+  <div id="message" class="message" role="status" aria-live="polite" hidden>
+    <span id="message-text"></span>
+    <button id="dismiss-message" type="button" class="quiet" aria-label="Dismiss notice">×</button>
+  </div>
   <div id="update-banner" class="update-banner" hidden>
     <span>An app update is ready. Your imported files will stay on this device.</span>
     <button id="apply-update" type="button">Update app</button>
@@ -48,11 +52,6 @@
         <p class="small">Keep the original HTML and PDFs in a downloaded device folder as an independent backup. If you imported before and see this screen again, restore your files from that backup.</p>
         <a href="./guide.html">Installation and airplane-mode checklist</a>
       </div>
-      <div id="itinerary-toolbar" class="viewer-toolbar" hidden>
-        <span id="itinerary-label" class="file-label"></span>
-        <button id="expand-itinerary" type="button" class="quiet">Expand view</button>
-        <button type="button" class="quiet" data-choose="itinerary-input">Replace itinerary</button>
-      </div>
       <div id="itinerary-view"></div>
     </section>
 
@@ -62,14 +61,9 @@
         <p class="small">Separate PDFs, original filenames. All imports stay on this device.</p>
       </div>
       <div class="panel import-panel">
-        <label for="folder-name">Folder for selected PDFs</label>
-        <input id="folder-name" type="text" list="folder-options" value="Accommodation" maxlength="300" autocomplete="off">
-        <datalist id="folder-options">
-          <option value="Entry and travel documents"></option>
-          <option value="Transportation"></option>
-          <option value="Accommodation"></option>
-          <option value="Activities"></option>
-        </datalist>
+        <label for="folder-name">Folder (optional)</label>
+        <input id="folder-name" type="text" list="folder-options" placeholder="Leave blank to use Documents" maxlength="300" autocomplete="off">
+        <datalist id="folder-options"></datalist>
         <div class="actions">
           <button type="button" data-choose="pdf-input">Import PDFs</button>
           <button id="folder-import-label" type="button" class="quiet" data-choose="folder-input" hidden>Import a folder</button>
@@ -88,7 +82,7 @@
       <p id="install-hint" class="notice">Use your browser's installation menu or Share → Add to Home Screen, where supported. Launch the installed icon and import your files there.</p>
       <div class="status-grid">
         <article class="panel"><h2>App shell</h2><p id="shell-status">Checking…</p></article>
-        <article class="panel"><h2>Itinerary</h2><p id="itinerary-status">Checking local storage…</p></article>
+        <article class="panel"><h2>Itinerary</h2><p id="itinerary-status">Checking local storage…</p><button type="button" class="quiet" data-choose="itinerary-input">Import / replace itinerary</button></article>
         <article class="panel"><h2>Documents</h2><p id="documents-status">Checking local storage…</p></article>
         <article class="panel"><h2>Storage protection</h2><p id="persistence-status">Checking…</p><button id="request-persistence" type="button" class="quiet">Request storage protection</button></article>
       </div>
@@ -124,6 +118,7 @@
       <div id="pdf-view"></div>
     </section>
   </main>
+  <button id="exit-expanded" type="button" class="reading-menu quiet" aria-label="Show app navigation" hidden>Menu</button>
   <div class="file-inputs">
     <input id="itinerary-input" type="file" accept=".html,.htm,text/html" tabindex="-1" aria-label="Import or replace itinerary HTML">
     <input id="pdf-input" type="file" accept=".pdf,application/pdf" multiple tabindex="-1" aria-label="Import PDFs">
