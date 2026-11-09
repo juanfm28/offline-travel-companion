@@ -49,11 +49,13 @@ label:not(.button), .search-label { display: block; font-weight: 600; margin-bot
 .search-label { margin-top: 1.5rem; }
 #document-search { margin-bottom: 1.5rem; }
 .folder-heading { margin: 1.8rem 0 .65rem; overflow-wrap: anywhere; }
-.document-row { display: flex; align-items: center; gap: .75rem; padding: .85rem 1rem; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; margin-bottom: .5rem; }
-.document-main { flex: 1; min-width: 0; }
-.document-main button { padding: 0; justify-content: flex-start; text-align: left; background: none; border: 0; color: var(--green); overflow-wrap: anywhere; min-height: 44px; }
-.document-main .small { margin: .1rem 0 0; }
-.document-actions { display: flex; gap: .4rem; }
+.document-row { display: flex; align-items: stretch; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; margin-bottom: .5rem; }
+.document-main { flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: center; gap: .15rem; padding: .85rem 1rem; text-align: left; background: transparent; border: 0; border-radius: 9px 0 0 9px; color: var(--green); }
+.document-name { overflow-wrap: anywhere; width: 100%; }
+.document-main .small { display: block; margin: 0; font-weight: 400; }
+.document-main:hover, .document-main:active { background: var(--soft); filter: none; }
+.document-main:focus-visible { outline-offset: -3px; }
+.document-actions { display: flex; align-items: center; gap: .4rem; padding: .85rem 1rem .85rem 0; }
 .document-actions button { font-size: .8rem; padding: .4rem .65rem; }
 .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .status-grid .panel { margin: 0; }
@@ -95,7 +97,8 @@ li { margin-bottom: .5rem; }
   .section-heading { display: block; }
   .status-grid { grid-template-columns: 1fr; }
   .document-row { flex-wrap: wrap; }
-  .document-actions { width: 100%; }
+  .document-main { flex-basis: 100%; border-radius: 9px 9px 0 0; }
+  .document-actions { width: 100%; padding: .2rem 1rem .85rem; }
 }
 @media (prefers-color-scheme: dark) {
   :root { --bg: #141d17; --paper: #1b271f; --ink: #edf0e7; --muted: #b2bdad; --green: #a4c9a8; --line: #3b4c3e; --soft: #2b3b2d; --alert: #ffcf9e; }

@@ -91,12 +91,13 @@
         lastFolder = doc.folder;
       }
       const row = document.createElement('div'); row.className = 'document-row';
-      const main = document.createElement('div'); main.className = 'document-main';
-      const open = document.createElement('button'); open.type = 'button'; open.textContent = doc.name;
-      open.addEventListener('click', () => { location.hash = `pdf/${doc.id}`; });
-      const info = document.createElement('p'); info.className = 'small';
+      const main = document.createElement('button'); main.type = 'button'; main.className = 'document-main';
+      main.setAttribute('aria-label', `Open ${doc.name}`);
+      main.addEventListener('click', () => { location.hash = `pdf/${doc.id}`; });
+      const name = document.createElement('span'); name.className = 'document-name'; name.textContent = doc.name;
+      const info = document.createElement('span'); info.className = 'small';
       info.textContent = `${C.formatBytes(doc.size)} · saved ${displayTime(doc.savedAt)}`;
-      main.append(open, info);
+      main.append(name, info);
       const actions = document.createElement('div'); actions.className = 'document-actions';
       const replace = document.createElement('button'); replace.type = 'button'; replace.className = 'quiet'; replace.textContent = 'Replace';
       replace.setAttribute('aria-label', `Replace ${doc.name}`);
