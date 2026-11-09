@@ -260,22 +260,36 @@
     $('verification-result').textContent = `Checked ${displayTime(Date.now())}: cached app, itinerary and ${state.documents.length} PDFs could all be read locally and matched their saved fingerprints. Device airplane-mode and restart tests are still required.`;
     announce('Saved files passed their local check. Now run the airplane-mode checklist.');
   }
+  function syncUpdateBanner() {
+    const waiting = registration?.waiting;
+    // The first installation briefly enters the installed/waiting state too.
+    // Offer an update only when it is replacing an already active worker.
+    $('update-banner').hidden = !(waiting && registration.active && waiting !== registration.active && waiting.state === 'installed');
+  }
   async function registerWorker() {
     if (!('serviceWorker' in navigator) || !isSecureContext) {
       $('shell-status').textContent = 'Offline installation requires HTTPS (or localhost for desktop development).'; return;
     }
     try {
       registration = await navigator.serviceWorker.register(new URL('sw.js', base), { scope: base.href, updateViaCache: 'none' });
-      const showWaiting = () => { $('update-banner').hidden = !registration.waiting; };
-      showWaiting();
-      registration.addEventListener('updatefound', () => {
-        const installing = registration.installing;
-        installing?.addEventListener('statechange', () => {
-          if (installing.state === 'installed') { showWaiting(); refreshStatus(); }
-          if (installing.state === 'redundant') announce('An app update could not be installed. The existing app and local files have been kept.', 'error');
+      const observed = new WeakSet();
+      const observe = worker => {
+        if (!worker || observed.has(worker)) return;
+        observed.add(worker);
+        let activated = worker.state === 'activated';
+        worker.addEventListener('statechange', () => {
+          if (worker.state === 'activated') activated = true;
+          syncUpdateBanner();
+          if (worker.state === 'installed' || worker.state === 'activated') refreshStatus();
+          if (worker.state === 'redundant' && !activated) announce('An app update could not be installed. The existing app and local files have been kept.', 'error');
         });
-      });
+      };
+      syncUpdateBanner();
+      observe(registration.installing);
+      observe(registration.waiting);
+      registration.addEventListener('updatefound', () => observe(registration.installing));
       navigator.serviceWorker.addEventListener('controllerchange', () => {
+        syncUpdateBanner();
         if (applyUpdate) location.reload();
         else refreshStatus();
       });
@@ -311,7 +325,7 @@
     if (!registration) await registerWorker();
     if (!registration) throw new Error('App updates require an HTTPS address and a service-worker-capable browser.');
     await registration.update(); await refreshStatus();
-    if (registration.waiting) $('update-banner').hidden = false;
+    syncUpdateBanner();
     announce('App update check requested. An available update will appear above; saved files stay on this device.');
   }));
   $('apply-update').addEventListener('click', () => work(async () => {

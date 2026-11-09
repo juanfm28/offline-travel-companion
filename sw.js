@@ -1,4 +1,4 @@
-/* Shell 1.0.1. Bump this comment and core.VERSION for each release.
+/* Shell 1.0.2. Bump this comment and core.VERSION for each release.
  * Cache only the public shell. Private PDFs are read directly from local IndexedDB. */
 importScripts('./core.js', './storage.js');
 const C = CompanionCore;
