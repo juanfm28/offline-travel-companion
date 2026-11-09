@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "Travel companion",
+  "short_name": "Travel",
+  "description": "Your imported itinerary and confirmations, stored on this device for offline travel.",
+  "lang": "en",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f0e7",
+  "theme_color": "#263e32",
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

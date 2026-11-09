@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#263e32">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Offline use · Travel companion</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="content">
+    <a class="button quiet" href="./#status">← Travel companion</a>
+    <p class="eyebrow">Installation and recovery</p>
+    <h1>Using local files offline</h1>
+    <div class="panel">
+      <h2>Install, then import</h2>
+      <ol>
+        <li>Open the app's final HTTPS address while connected.</li>
+        <li>Use the browser's installation menu or Share → Add to Home Screen, where supported.</li>
+        <li>Launch the installed app and choose <strong>Import itinerary</strong>. Select a complete, self-contained HTML file you trust.</li>
+        <li>In <strong>Documents</strong>, select a folder name and use <strong>Import PDFs</strong>. Multiple selection is supported where the file picker allows it.</li>
+        <li>Optional folder import preserves the selected tree and skips non-PDF files. ZIP files are not supported.</li>
+      </ol>
+      <p>Install before importing. Browser tabs and installed apps may have separate storage. Keep the original HTML and PDFs in an independent, downloaded device folder. Cloud-only copies are not an offline backup.</p>
+    </div>
+    <div class="panel">
+      <h2>Check offline operation</h2>
+      <ol>
+        <li>In <strong>Offline status</strong>, wait for every shell asset to be cached, request storage protection and choose <strong>Check saved files</strong>.</li>
+        <li>Disable network access, including Wi-Fi. Force-close the app and reopen it using its installed icon.</li>
+        <li>Check the itinerary's images, section links, map controls and daily navigation.</li>
+        <li>Open several PDFs, including a multi-page document. Test scrolling, zoom and both device orientations.</li>
+        <li>Restart the device while offline and repeat. Recheck after several days without connectivity where practical.</li>
+        <li>Confirm that the independent originals also open in the device's file manager without a connection.</li>
+      </ol>
+      <p>A successful file check or service-worker registration does not prove offline launch works. Essential device checks must pass before relying on the app. External web links require connectivity.</p>
+    </div>
+    <div class="panel">
+      <h2>Open and replace documents</h2>
+      <p>Tap a PDF filename for its preview. If pages are missing, try <strong>Open full screen</strong> and use Back to return. A separate browser window may not share the installed app's local files. If viewing fails, use the independent original in your file manager.</p>
+      <p>Use <strong>Replace itinerary</strong> to update the HTML without changing PDFs. Use a PDF row's <strong>Replace</strong> button for one document, or reimport into the same folder with the same filename. Different filenames remain separate files. Recognized DDMM and YYYY-MM-DD filename prefixes sort by month and day within folders.</p>
+      <p>Replacing imported files needs no deployment and works offline from downloaded originals. Failed validation or storage transactions preserve the previously saved files. Repeat file and offline checks after changes.</p>
+    </div>
+    <div class="panel">
+      <h2>Updates and recovery</h2>
+      <p>While connected, choose <strong>Check for app update</strong>. Finish any import before choosing <strong>Update app</strong>. Shell updates preserve imported files; repeat the offline checks afterward.</p>
+      <p>If an imported file is missing, restore it from your independent copy. If the app itself no longer opens offline, reconnect to restore the shell first.</p>
+      <p>Persistence is not guaranteed. Clearing website data, reinstalling, device storage pressure or changing the app's address can make local files unavailable. A complete storage wipe can remove both the shell and its data, so the app cannot always warn before files disappear. Keep independent originals and avoid clearing data or reinstalling as an update method.</p>
+    </div>
+  </main>
+</body>
+</html>

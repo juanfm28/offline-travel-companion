@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#263e32">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Travel">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src data:; connect-src 'self'; frame-src 'self' blob:; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>Travel companion</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./core.js"></script>
+  <script defer src="./storage.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="#itinerary" aria-label="Travel companion, itinerary">
+      <img src="./icons/icon-192.png" width="36" height="36" alt="">
+      <span>Travel companion</span>
+    </a>
+    <span id="network-hint" class="network-hint">On this device</span>
+  </header>
+  <nav class="tabs" aria-label="Main navigation">
+    <a href="#itinerary" aria-current="page">Itinerary</a>
+    <a href="#documents">Documents <span id="document-count" class="count">0</span></a>
+    <a href="#status">Offline status</a>
+  </nav>
+  <div id="message" class="message" role="status" aria-live="polite" hidden></div>
+  <div id="update-banner" class="update-banner" hidden>
+    <span>An app update is ready. Your imported files will stay on this device.</span>
+    <button id="apply-update" type="button">Update app</button>
+  </div>
+  <noscript><p class="notice">Enable JavaScript to import and open your local files.</p></noscript>
+  <main>
+    <section id="panel-itinerary" aria-labelledby="itinerary-title">
+      <div id="itinerary-empty" class="welcome panel">
+        <p class="eyebrow">Your trip, on this device</p>
+        <h1 id="itinerary-title">Bring your itinerary along.</h1>
+        <p>Import your self-contained HTML itinerary from Files. Its images, map and daily plans stay together, ready for places without reception.</p>
+        <button type="button" data-choose="itinerary-input">Import itinerary</button>
+        <p class="small">First install this app on your Home Screen, then open it there and import your files.</p>
+        <p class="small">Keep the original HTML and PDFs in a downloaded device folder as an independent backup. If you imported before and see this screen again, restore your files from that backup.</p>
+        <a href="./guide.html">Installation and airplane-mode checklist</a>
+      </div>
+      <div id="itinerary-toolbar" class="viewer-toolbar" hidden>
+        <span id="itinerary-label" class="file-label"></span>
+        <button id="expand-itinerary" type="button" class="quiet">Expand view</button>
+        <button type="button" class="quiet" data-choose="itinerary-input">Replace itinerary</button>
+      </div>
+      <div id="itinerary-view"></div>
+    </section>
+
+    <section id="panel-documents" class="content" aria-labelledby="documents-title" hidden>
+      <div class="section-heading">
+        <div><p class="eyebrow">Booking confirmations</p><h1 id="documents-title">Documents</h1></div>
+        <p class="small">Separate PDFs, original filenames. All imports stay on this device.</p>
+      </div>
+      <div class="panel import-panel">
+        <label for="folder-name">Folder for selected PDFs</label>
+        <input id="folder-name" type="text" list="folder-options" value="Accommodation" maxlength="300" autocomplete="off">
+        <datalist id="folder-options">
+          <option value="Entry and travel documents"></option>
+          <option value="Transportation"></option>
+          <option value="Accommodation"></option>
+          <option value="Activities"></option>
+        </datalist>
+        <div class="actions">
+          <button type="button" data-choose="pdf-input">Import PDFs</button>
+          <button id="folder-import-label" type="button" class="quiet" data-choose="folder-input" hidden>Import a folder</button>
+        </div>
+        <p class="small">Select multiple PDFs from the same folder. Matching folder and filename replaces the local copy. Folder import, where supported, preserves the selected folder tree. ZIP import is not included.</p>
+      </div>
+      <label class="search-label" for="document-search">Find a confirmation</label>
+      <input id="document-search" type="search" placeholder="Filename or folder" autocomplete="off">
+      <p id="documents-empty" class="notice">No PDFs imported. Your originals remain available independently in Files.</p>
+      <div id="document-list"></div>
+    </section>
+
+    <section id="panel-status" class="content" aria-labelledby="status-title" hidden>
+      <p class="eyebrow">Before heading out</p>
+      <h1 id="status-title">Offline status</h1>
+      <p id="install-hint" class="notice">Use your browser's installation menu or Share → Add to Home Screen, where supported. Launch the installed icon and import your files there.</p>
+      <div class="status-grid">
+        <article class="panel"><h2>App shell</h2><p id="shell-status">Checking…</p></article>
+        <article class="panel"><h2>Itinerary</h2><p id="itinerary-status">Checking local storage…</p></article>
+        <article class="panel"><h2>Documents</h2><p id="documents-status">Checking local storage…</p></article>
+        <article class="panel"><h2>Storage protection</h2><p id="persistence-status">Checking…</p><button id="request-persistence" type="button" class="quiet">Request storage protection</button></article>
+      </div>
+      <p id="storage-space" class="small"></p>
+      <div class="panel">
+        <h2>Check before travelling offline</h2>
+        <p>The app checks saved shell assets and reads back your imported files. This does not replace an airplane-mode test on your device.</p>
+        <div class="actions">
+          <button id="verify-files" type="button">Check saved files</button>
+          <button id="check-update" type="button" class="quiet">Check for app update</button>
+        </div>
+        <p id="verification-result" class="small">No file check run in this session.</p>
+        <ol>
+          <li>Disconnect the hotspot and enable Airplane Mode. Turn Wi-Fi off too.</li>
+          <li>Force-close this app and reopen it from the Home Screen.</li>
+          <li>Open the itinerary, test its map and navigation, and read several PDFs.</li>
+          <li>Restart the device while offline and repeat. Recheck after several days.</li>
+        </ol>
+        <a href="./guide.html">Full installation, replacement and recovery guide</a>
+      </div>
+      <p class="small">Device storage can be cleared or evicted. Keep independent originals in a downloaded device folder. If the browser clears the whole site, the app may also need an internet connection to reinstall its shell before reimporting.</p>
+      <p class="small">Only this generic app is hosted. Files you import are stored locally; there is no upload or sync service. Import only HTML you trust.</p>
+      <p id="app-version" class="small"></p>
+    </section>
+
+    <section id="panel-pdf" aria-labelledby="pdf-title" hidden>
+      <div class="viewer-toolbar">
+        <button id="close-pdf" type="button" class="quiet">← Documents</button>
+        <h1 id="pdf-title" class="file-label"></h1>
+        <a id="pdf-fullscreen" class="button quiet" href="#documents">Open full screen</a>
+      </div>
+      <p class="pdf-help small">If pages are missing or the preview is blank, try Open full screen and use Back to return. If PDF viewing fails on your device, use the original in your file manager.</p>
+      <div id="pdf-view"></div>
+    </section>
+  </main>
+  <div class="file-inputs">
+    <input id="itinerary-input" type="file" accept=".html,.htm,text/html" tabindex="-1" aria-label="Import or replace itinerary HTML">
+    <input id="pdf-input" type="file" accept=".pdf,application/pdf" multiple tabindex="-1" aria-label="Import PDFs">
+    <input id="folder-input" type="file" webkitdirectory multiple tabindex="-1" aria-label="Import PDF folder">
+    <input id="replace-pdf-input" type="file" accept=".pdf,application/pdf" tabindex="-1" aria-label="Replace selected PDF">
+  </div>
+</body>
+</html>
